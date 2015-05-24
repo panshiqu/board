@@ -32,8 +32,8 @@ bool BoardLayer::init()
 	_drawSize = 1;
 
 	// Ïû³ý¾â³Ý
-	glEnable(GL_LINE_SMOOTH);
-	glEnable(GL_POINT_SMOOTH);
+// 	glEnable(GL_LINE_SMOOTH);
+// 	glEnable(GL_POINT_SMOOTH);
 
 	return true;
 }

@@ -40,7 +40,8 @@ bool BoardScene::init()
 	// 增加设置按钮
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	auto settingMenu = MenuItemImage::create("SettingNormal.png", "SettingSelected.png", CC_CALLBACK_0(BoardScene::onSetting, this));
-	settingMenu->setPosition(Vec2(settingMenu->getContentSize().width / 2, settingMenu->getContentSize().height / 2));
+	settingMenu->setScale((visibleSize.height / 10.0f) / settingMenu->getContentSize().height);
+	settingMenu->setAnchorPoint(Vec2(0.0f, 0.0f));
 	auto menu = Menu::create(settingMenu, NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);

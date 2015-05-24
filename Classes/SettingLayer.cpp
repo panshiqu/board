@@ -18,17 +18,22 @@ SettingLayer::~SettingLayer(void)
 
 bool SettingLayer::init()
 {
-	// 初始化设置层
+	// 添加采色板
+	_colorPicker = Sprite::create("ColorPicker.png");
+
+	// 计算比例因子
 	Size visibleSize = Director::getInstance()->getVisibleSize();
-	if (!LayerColor::initWithColor(Color4B(255, 255, 255, 255),	220, 220))
+	float scale = (visibleSize.height / 2.0f) / _colorPicker->getContentSize().height;
+
+	// 初始化设置层
+	if (!LayerColor::initWithColor(Color4B(255, 255, 255, 255),	scale * 220.0f, scale * 220.0f))
 		return false;
 
 	// 设置触摸模式
 	this->setTouchMode(Touch::DispatchMode::ONE_BY_ONE);
 
-	// 添加采色板
-	_colorPicker = Sprite::create("ColorPicker.png");
-	_colorPicker->setPosition(_colorPicker->getContentSize().width / 2, _colorPicker->getContentSize().height / 2);
+	_colorPicker->setAnchorPoint(Vec2(0.0f, 0.0f));
+	_colorPicker->setScale(scale);
 	this->addChild(_colorPicker);
 
 	_colorImage = new Image();
@@ -37,8 +42,9 @@ bool SettingLayer::init()
 	// 添加按钮布局
 	auto *layout = Layout::create();
 	layout->setLayoutType(Layout::Type::VERTICAL);
-	layout->setPosition(Vec2(_colorPicker->getContentSize().width, 0));
-	layout->setContentSize(Size(100, _colorPicker->getContentSize().width));
+	layout->setPosition(Vec2(_colorPicker->getContentSize().width * scale, 0));
+	layout->setContentSize(Size(100.0f, _colorPicker->getContentSize().width));
+	layout->setScale(scale);
 	this->addChild(layout);
 
 	// 增加增加线宽按钮
@@ -85,9 +91,12 @@ bool SettingLayer::init()
 bool SettingLayer::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event)
 {
 	Point location = touch->getLocation();
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+
 	if (_colorPicker->getBoundingBox().containsPoint(location)) {
 		unsigned char *data = _colorImage->getData();
-		unsigned int *pixel = (unsigned int *)data;
+		unsigned int *pixel = (unsigned int *)data;	
+		location = location / ((visibleSize.height / 2.0f) / _colorPicker->getContentSize().height);
 		pixel = pixel + (220 * (unsigned int)(220 - location.y)) + (unsigned int)location.x;
 		BoardScene *runingScene = (BoardScene *)Director::getInstance()->getRunningScene();
 		runingScene->setColor(*pixel);
